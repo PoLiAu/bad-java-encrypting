@@ -14,17 +14,18 @@ public class Main {
         d = s.next().equals("d");
         System.out.println("Take text from console or file? t/f");
         if (s.next().equals("t")) {
+            System.out.println("No spaces! Use _ like_here");
             str=s.next();
         }else{
             str=readFromFile(s.next());
         }
         Random r=new Random();
         System.out.println("Input passwd or generate it? i/g");
-        if (s.next().equals("i")){
+        String st=s.next();
+        if (st.equals("i")){
             passwd=s.next();
         }else{
-            int n=s.nextInt();
-            for (int i = 0; i < n; i++) {
+            for (int i = 0; i < 30; i++) {
                 passwd=passwd+String.valueOf(r.nextInt(4));
             }
             System.out.println(passwd);
