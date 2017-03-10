@@ -10,18 +10,24 @@ public class Main {
         Scanner s=new Scanner(System.in);
         String path, passwd="";
         if (args.length!=1) {
-            path="/home/niklev/test.txt";//s.next();
+            path=s.next();
         }else{
             path=args[0];
         }
         Random r=new Random();
-        for (int i = 0; i < 5; i++) {
-
-            passwd=passwd+String.valueOf(r.nextInt(4));
+        System.out.println("y/n");
+        if (s.next().eqals("y")){
+            passwd=s.next();
+        }else{
+            int n=s.nextInt();
+            for (int i = 0; i < n; i++) { 
+                passwd=passwd+String.valueOf(r.nextInt(4)); 
+            }
+            System.out.println(passwd);
         }
         writeToFile(path,"123");
         String crypted=Crypt(path,passwd);
-        System.out.print(crypted+' '+passwd);
+        System.out.println(crypted);
         //System.out.print(Decrypt(crypted,passwd));
         s.close();
     }
