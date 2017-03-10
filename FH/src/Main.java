@@ -8,127 +8,145 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner s=new Scanner(System.in);
-        String path, passwd="";
-        if (args.length!=1) {
-            path=s.next();
+        boolean d;
+        String str, passwd="";
+        System.out.println("Decrypt or encrypt? d/e");
+        d = s.next().equals("d");
+        System.out.println("Take text from console or file? t/f");
+        if (s.next().equals("t")) {
+            str=s.next();
         }else{
-            path=args[0];
+            str=readFromFile(s.next());
         }
         Random r=new Random();
-        System.out.println("y/n");
-        if (s.next().eqals("y")){
+        System.out.println("Input passwd or generate it? i/g");
+        if (s.next().equals("i")){
             passwd=s.next();
         }else{
             int n=s.nextInt();
-            for (int i = 0; i < n; i++) { 
-                passwd=passwd+String.valueOf(r.nextInt(4)); 
+            for (int i = 0; i < n; i++) {
+                passwd=passwd+String.valueOf(r.nextInt(4));
             }
             System.out.println(passwd);
         }
-        writeToFile(path,"123");
-        String crypted=Crypt(path,passwd);
-        System.out.println(crypted);
-        //System.out.print(Decrypt(crypted,passwd));
+        String cry=d?Decrypt(str,passwd):Crypt(str,passwd);
+        System.out.println(cry);
+        System.out.println("Write to file? y/n");
+        if (s.next().equals("y")) {
+            writeToFile(s.next(),cry);
+        }
         s.close();
     }
 
-    /*private static String Decrypt(String path, String passwd) {
-        String str=readFromFile(path);
-        for (int i = 0; i < passwd.length(); i++) {
-            if (passwd.charAt(i)=='0'){
-                for (int j = 0; j < str.length(); j++) {
-                    boolean b=Base.getNs().containsValue(String.valueOf(str.charAt(j)));
-                    if (b) {
-                        str = str.replaceFirst(Base.getNs().);
-                        j+=3;
+    private static String Decrypt(String str, String passwd) {
+        for (int i = passwd.length()-1; i > -1 ; i--) {
+            switch (passwd.charAt(i)) {
+                case '0' :{
+                    int j = 0;
+                    while (j < str.length()- 2) {
+                        boolean b = Base.getNs().containsValue(str.substring(j, j + 3));
+                        if (b) {
+                            str = str.replaceFirst(str.substring(j, j + 3), Base.getFromNs(str.substring(j, j + 3)));
+                        }
+                        j++;
                     }
+                    break;
                 }
-            }
-            if (passwd.charAt(i)=='1'){
-                for (int j = 0; j < str.length(); j++) {
-                    boolean b=Base.getSNs().containsKey(String.valueOf(str.charAt(j)));
-                    if (b) {
-                        str = str.replaceFirst(String.valueOf(str.charAt(j)), Base.getSNs().get(String.valueOf(str.charAt(j))));
-                        j+=3;
+                case '1' :{
+                    int j = 0;
+                    while (j < str.length()- 2) {
+                        boolean b = Base.getSNs().containsValue(str.substring(j, j + 3));
+                        if (b) {
+                            str = str.replaceFirst(str.substring(j, j + 3), Base.getFromSNs(str.substring(j, j + 3)));
+                        }
+                        j++;
                     }
+                    break;
                 }
-            }
-            if (passwd.charAt(i)=='2'){
-                for (int j = 0; j < str.length(); j++) {
-                    boolean b=Base.getFPs().containsKey(String.valueOf(str.charAt(j)));
-                    if (b) {
-                        str = str.replaceFirst(String.valueOf(str.charAt(j)), Base.getFPs().get(String.valueOf(str.charAt(j))));
-                        j+=3;
+                case '2' :{
+                    int j = 0;
+                    while (j < str.length()- 2) {
+                        boolean b = Base.getFPs().containsValue(str.substring(j, j + 3));
+                        if (b) {
+                            str = str.replaceFirst(str.substring(j, j + 3), Base.getFromFPs(str.substring(j, j + 3)));
+                        }
+                        j++;
                     }
+                    break;
                 }
-            }
-            if (passwd.charAt(i)=='3'){
-                for (int j = 0; j < str.length(); j++) {
-                    boolean b=Base.getSFPs().containsKey(String.valueOf(str.charAt(j)));
-                    if (b) {
-                        str = str.replaceFirst(String.valueOf(str.charAt(j)), Base.getSFPs().get(String.valueOf(str.charAt(j))));
-                        j+=3;
+                case '3' :{
+                    int j = 0;
+                    while (j < str.length()- 2) {
+                        boolean b = Base.getSFPs().containsValue(str.substring(j, j + 3));
+                        if (b) {
+                            str = str.replaceFirst(str.substring(j, j + 3), Base.getFromSFPs(str.substring(j, j + 3)));
+                        }
+                        j++;
                     }
+                    break;
                 }
             }
         }
-        writeToFile(path,str);
         return (str);
-    }*/
+    }
 
-    private static String Crypt(String path, String passwd) {
-        String str=readFromFile(path);
+    private static String Crypt(String str, String passwd) {
         for (int i = 0; i < passwd.length(); i++) {
-           if (passwd.charAt(i)=='0'){
-               int j=0;
-               int ls=str.length();
-               for (int j1 = 0; j1 < ls; j1++) {
-                   boolean b=Base.getNs().containsKey(String.valueOf(str.charAt(j)));
-                   if (b) {
-                       String sstr=str.substring(j);
-                       str =j==0 ? sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getNs().get(String.valueOf(sstr.charAt(0)))) :str.substring(0,j)+sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getNs().get(String.valueOf(sstr.charAt(0))));
-                       j+=3;
-                   }
-               }
-           }
-            if (passwd.charAt(i)=='1'){
-                int j=0;
-                int ls=str.length();
-                for (int j1 = 0; j1 < ls; j1++) {
-                    boolean b=Base.getSNs().containsKey(String.valueOf(str.charAt(j)));
-                    if (b) {
-                        String sstr=str.substring(j);
-                        str =j==0 ? sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getSNs().get(String.valueOf(sstr.charAt(0)))) : str.substring(0,j)+sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getSNs().get(String.valueOf(sstr.charAt(0))));
-                        j+=3;
+            switch (passwd.charAt(i)) {
+                case '0' :{
+                    int j = 0;
+                    int ls = str.length();
+                    for (int j1 = 0; j1 < ls; j1++) {
+                        boolean b = Base.getNs().containsKey(String.valueOf(str.charAt(j)));
+                        if (b) {
+                            String sstr = str.substring(j);
+                            str = j == 0 ? sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getNs().get(String.valueOf(sstr.charAt(0)))) : str.substring(0, j) + sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getNs().get(String.valueOf(sstr.charAt(0))));
+                            j += 2;
+                        }
+                        j++;
                     }
                 }
-            }
-            if (passwd.charAt(i)=='2'){
-                int j=0;
-                int ls=str.length();
-                for (int j1 = 0; j1 < ls; j1++) {
-                    boolean b=Base.getFPs().containsKey(String.valueOf(str.charAt(j)));
-                    if (b) {
-                        String sstr=str.substring(j);
-                        str =j==0 ? sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getFPs().get(String.valueOf(sstr.charAt(0)))) :  str.substring(0,j)+sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getFPs().get(String.valueOf(sstr.charAt(0))));
-                        j+=3;
+                case '1' :{
+                    int j = 0;
+                    int ls = str.length();
+                    for (int j1 = 0; j1 < ls; j1++) {
+                        boolean b = Base.getSNs().containsKey(String.valueOf(str.charAt(j)));
+                        if (b) {
+                            String sstr = str.substring(j);
+                            str = j == 0 ? sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getSNs().get(String.valueOf(sstr.charAt(0)))) : str.substring(0, j) + sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getSNs().get(String.valueOf(sstr.charAt(0))));
+                            j += 2;
+                        }
+                        j++;
                     }
                 }
-            }
-            if (passwd.charAt(i)=='3'){
-                int j=0;
-                int ls=str.length();
-                for (int j1 = 0; j1 < ls; j1++) {
-                    boolean b=Base.getSFPs().containsKey(String.valueOf(str.charAt(j)));
-                    if (b) {
-                        String sstr=str.substring(j);
-                        str =j==0 ? sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getSFPs().get(String.valueOf(sstr.charAt(0)))) :  str.substring(0,j)+sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getSFPs().get(String.valueOf(sstr.charAt(0))));
-                        j+=3;
+                case '2' :{
+                    int j = 0;
+                    int ls = str.length();
+                    for (int j1 = 0; j1 < ls; j1++) {
+                        boolean b = Base.getFPs().containsKey(String.valueOf(str.charAt(j)));
+                        if (b) {
+                            String sstr = str.substring(j);
+                            str = j == 0 ? sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getFPs().get(String.valueOf(sstr.charAt(0)))) : str.substring(0, j) + sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getFPs().get(String.valueOf(sstr.charAt(0))));
+                            j += 2;
+                        }
+                        j++;
+                    }
+                }
+                case '3' :{
+                    int j = 0;
+                    int ls = str.length();
+                    for (int j1 = 0; j1 < ls; j1++) {
+                        boolean b = Base.getSFPs().containsKey(String.valueOf(str.charAt(j)));
+                        if (b) {
+                            String sstr = str.substring(j);
+                            str = j == 0 ? sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getSFPs().get(String.valueOf(sstr.charAt(0)))) : str.substring(0, j) + sstr.replaceFirst(String.valueOf(sstr.charAt(0)), Base.getSFPs().get(String.valueOf(sstr.charAt(0))));
+                            j += 2;
+                        }
+                        j++;
                     }
                 }
             }
         }
-        writeToFile(path,str);
         return (str);
     }
 
@@ -144,6 +162,7 @@ public class Main {
             System.out.println(ex.getMessage());
         }
     }
+
 
     private static String readFromFile(String path) {
         String str="";
